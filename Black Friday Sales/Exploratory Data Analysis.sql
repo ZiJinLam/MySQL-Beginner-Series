@@ -25,10 +25,21 @@ FROM black_friday_sales;
 -- As there are no NaN, need not performing Data Cleaning and filling the NaN
 
 -- Global Statistics
--- Average on sales
+-- Average price per Product
 SELECT AVG(Purchase)
 FROM black_friday_sales;
 -- Mean=9264
+
+-- Pruchase per User
+WITH t1 AS
+(
+SELECT DISTINCT User_ID, SUM(Purchase) OVER (PARTITION BY User_ID) AS total_purhcase
+FROM black_friday_sales
+)
+SELECT AVG(total_purhcase)
+FROM t1;
+-- 865016
+
 
 -- Check which Product_ID is the most popular
 SELECT Product_ID, COUNT(*) AS sales_count, AVG(Purchase) AS average_sales
@@ -55,21 +66,47 @@ GROUP BY User_ID
 SELECT AVG(count_of_items)
 FROM purchase_count;
 
--- See relationship // gender and counts, expense
-SELECT Gender, COUNT(*), AVG(Purchase)
+
+SELECT *, SUM(Purchase) OVER(PARTITION BY User_ID) AS Total_purchase
+FROM black_friday_sales;
+
+SELECT User_ID, COUNT(*)
 FROM black_friday_sales
+WHERE User_ID = 1000001;
+
+-- See relationship // gender and counts, expense
+WITH t1 AS
+(
+-- Create a table which contains distinct user
+SELECT DISTINCT User_ID, Gender, SUM(Purchase) OVER(PARTITION BY User_ID) AS Total_purchase
+FROM black_friday_sales
+)
+SELECT Gender, COUNT(*), AVG(Total_purchase)
+FROM t1
 GROUP BY Gender;
 -- Male buy a lot, while the aveage expense is slightly higher, comparing to Female
 
 -- See relationship // age and counts, expense
-SELECT Age, COUNT(*), AVG(Purchase)
+WITH t1 AS
+(
+-- Create a table which contains distinct user
+SELECT DISTINCT User_ID, Age, SUM(Purchase) OVER(PARTITION BY User_ID) AS Total_purchase
 FROM black_friday_sales
+)
+SELECT Age, COUNT(*), AVG(Total_purchase)
+FROM t1
 GROUP BY Age;
 -- 26-35 buy the most, double of the second place, highlight would be the average expense of this age group < total aveage (9264)
 
 -- See relationship // city and counts, expense
-SELECT City_Category, Stay_In_Current_City_Years, COUNT(*), AVG(Purchase)
+WITH t1 AS
+(
+-- Create a table which contains distinct user
+SELECT DISTINCT User_ID, City_Category, Stay_In_Current_City_Years, SUM(Purchase) OVER(PARTITION BY User_ID) AS Total_purchase
 FROM black_friday_sales
+)
+SELECT City_Category, Stay_In_Current_City_Years, COUNT(*), AVG(Total_purchase)
+FROM t1
 GROUP BY City_Category, Stay_In_Current_City_Years
 ORDER BY City_Category, Stay_In_Current_City_Years DESC;
 -- Intersting discovery: People who stay in 1 year purchases the most; Larger group of people? Or having a higher need? Or else?
@@ -94,8 +131,14 @@ ORDER BY City_Category, Stay_In_Current_City_Years DESC;
 -- Interting discovery: The count of total follows the pattern of average expense in city, i.e. C > B > A --> The more people live in the city, in higher aveage expense?
 
 -- See relationship // martial status and counts, expense
-SELECT Marital_Status, COUNT(*), AVG(Purchase)
+WITH t1 AS
+(
+-- Create a table which contains distinct user
+SELECT DISTINCT User_ID, Marital_Status, SUM(Purchase) OVER(PARTITION BY User_ID) AS Total_purchase
 FROM black_friday_sales
+)
+SELECT Marital_Status, COUNT(*), AVG(Total_purchase)
+FROM t1
 GROUP BY Marital_Status;
 -- Those who are not married obviously buy more, while the average expense is similar
 
