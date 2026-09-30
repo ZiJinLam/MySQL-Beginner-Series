@@ -84,7 +84,7 @@ FROM black_friday_sales
 SELECT Gender, COUNT(*), AVG(Total_purchase)
 FROM t1
 GROUP BY Gender;
--- Male buy a lot, while the aveage expense is slightly higher, comparing to Female
+-- Male buy a lot, with higher average expense
 
 -- See relationship // age and counts, expense
 WITH t1 AS
@@ -96,7 +96,7 @@ FROM black_friday_sales
 SELECT Age, COUNT(*), AVG(Total_purchase)
 FROM t1
 GROUP BY Age;
--- 26-35 buy the most, double of the second place, highlight would be the average expense of this age group < total aveage (9264)
+-- 26-35 buy the most, almost double of the second place, interesting that the average expense for age group follows the counts of age group
 
 -- See relationship // city and counts, expense
 WITH t1 AS
@@ -109,8 +109,7 @@ SELECT City_Category, Stay_In_Current_City_Years, COUNT(*), AVG(Total_purchase)
 FROM t1
 GROUP BY City_Category, Stay_In_Current_City_Years
 ORDER BY City_Category, Stay_In_Current_City_Years DESC;
--- Intersting discovery: People who stay in 1 year purchases the most; Larger group of people? Or having a higher need? Or else?
--- Interesting Pattern: The average purchase of each City has an order, i.e. C > B > A
+-- Intersting discovery: People who stay in 1 year has the largest group of people? 
 
 -- Create a table to check the staying period of individuals in each city
 WITH table_1 AS
