@@ -70,6 +70,12 @@ FROM purchase_count;
 SELECT *, SUM(Purchase) OVER(PARTITION BY User_ID) AS Total_purchase
 FROM black_friday_sales;
 
+DROP TABLE IF EXISTS distanct_bfs;
+
+CREATE TABLE distanct_bfs AS
+SELECT DISTINCT User_ID, Gender, Age, Occupation, City_Category, Stay_In_Current_City_Years, Marital_Status, SUM(Purchase) OVER(PARTITION BY User_ID) AS Total_purchase
+FROM black_friday_sales;
+
 SELECT User_ID, COUNT(*)
 FROM black_friday_sales
 WHERE User_ID = 1000001;
